@@ -1,0 +1,5 @@
+---
+email_to: 'root'
+smartd_packages:
+  - smartmontools
+  - mailutils

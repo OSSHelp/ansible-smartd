@@ -1,0 +1,3 @@
+---
+- name: smartd restart
+  service: name=smartd state=restarted

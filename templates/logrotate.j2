@@ -1,0 +1,10 @@
+{% raw %}/var/log/smartd/*.csv {
+    su
+    daily
+    rotate 7
+    missingok
+    compress
+    notifempty
+    copytruncate
+}
+{% endraw %}

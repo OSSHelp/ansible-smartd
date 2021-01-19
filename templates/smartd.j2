@@ -1,0 +1,1 @@
+DEVICESCAN -a {{ '-d ' ~ dev_type if dev_type is defined else '' }} -m {{ email_to }} {{ '-M ' ~ ds_type if ds_type is defined else '' }} -n standby,10,q -s {{st_type | default('L')}}/{{st_month | default('..')}}/{{st_day | default('..')}}/{{st_wday | default('1')}}/{{st_hour | default('2')}}

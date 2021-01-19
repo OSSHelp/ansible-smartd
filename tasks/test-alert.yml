@@ -1,0 +1,11 @@
+---
+- name: smartd config
+  template: src=smartd.j2 dest=/etc/smartd.conf
+  vars:
+    - ds_type: test
+
+- name: smartd restart
+  service: name=smartd state=restarted
+
+- name: smartd config
+  template: src=smartd.j2 dest=/etc/smartd.conf
