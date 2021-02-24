@@ -1,41 +1,17 @@
 ---
-- name: package installation
-  apt:
-    name: "{{ smartd_packages }}"
-    state: present
-    update_cache: true
-    cache_valid_time: 86400
+- name: gather required facts
+  setup:
+    gather_subset: [virtual]
+  when: ansible_virtualization_type is not defined
 
-- name: enable smartd service
-  service: name=smartd enabled=yes
+- name: install
+  include_tasks: install.yml
+  when: smartd_setup == "full" and (ansible_virtualization_type != 'lxc' or smartd_role_test_mode)
 
-- name: smartd service configuration
-  lineinfile:
-    create: yes
-    dest: /etc/default/smartmontools
-    state: present
-    regexp: "^#?{{ item.key }}"
-    line: "{{ item.key }}={{ item.value }}"
-  with_items:
-    - {key: "start_smartd", value: "yes"}
-    - {key: "smartd_opts", value: "'-p /var/run/smartd.pid -i 600 -A /var/log/smartd/'"}
-  notify: smartd restart
-
-- name: smartd log directory
-  file:
-    path: /var/log/smartd
-    state: directory
-  notify: smartd restart
-
-- name: smartd logrotate config
-  template: src=logrotate.j2 dest=/etc/logrotate.d/smartd
-
-- name: smartd config
-  template: src=smartd.j2 dest=/etc/smartd.conf
-  register: smartd_config
-  notify:
-    - smartd restart
+- name: configure
+  import_tasks: configure.yml
+  when: ansible_virtualization_type != 'lxc' or smartd_role_test_mode
 
 - name: test alert
   include_tasks: test-alert.yml
-  when: smartd_config.changed|bool
+  when: smartd_config.changed|bool and smartd_test_alert and (ansible_virtualization_type != 'lxc' or smartd_role_test_mode)

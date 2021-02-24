@@ -1,0 +1,12 @@
+---
+- name: package installation
+  apt:
+    name: "{{ smartd_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 86400
+
+- name: enable smartd service
+  service:
+    name: smartd
+    enabled: yes
