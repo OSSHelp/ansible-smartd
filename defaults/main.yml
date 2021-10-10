@@ -7,3 +7,4 @@ smartd_packages:
 
 smartd_test_alert: true
 smartd_role_test_mode: false
+smartd_devices_to_ignore: []

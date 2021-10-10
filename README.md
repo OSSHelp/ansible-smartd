@@ -19,6 +19,7 @@ Installs smartd plus minimal configuration
 | `email_to` | `root` | User to whom the message will be sent |
 | `smartd_test_alert` | `true` | Parameter to control the sending of a test alert |
 | `dev_type` | `` | Specifies the type of the device. See -d option in the [man 5 smartd.conf](https://linux.die.net/man/5/smartd.conf). |
+| `smartd_devices_to_ignore` | `[]` | List of devices to ignore |
 
 ## FAQ
 
@@ -30,7 +31,7 @@ Installs smartd plus minimal configuration
 
 ## TODO
 
-...
+- NVMe devices support?
 
 ## License
 
