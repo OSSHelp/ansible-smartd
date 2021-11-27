@@ -1,0 +1,15 @@
+---
+
+- name: unset smartd_scan_result
+  set_fact:
+    smartd_scan_result:
+
+- name: running smartctl
+  command: "smartctl -d {{ type }} --scan"
+  changed_when: false
+  register: smartd_scan_result
+
+- name: detect suitable devices types with smartctl
+  set_fact:
+    smartd_found_devices_types: "{{ smartd_found_devices_types|default([]) + [type] }}"
+  when: smartd_scan_result|length and ' -d ' in smartd_scan_result.stdout

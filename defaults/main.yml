@@ -8,4 +8,5 @@ smartd_packages:
 smartd_test_alert: true
 smartd_role_test_mode: false
 smartd_devices_to_ignore: []
-smartd_devices_types: [ sat, nvme ]
+smartd_devices_types: [sat, scsi, nvme]
+smartd_devices_verify: true

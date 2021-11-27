@@ -7,8 +7,8 @@
     regexp: "^#?{{ item.key }}"
     line: "{{ item.key }}={{ item.value }}"
   with_items:
-    - {key: "start_smartd", value: "yes"}
-    - {key: "smartd_opts", value: "'-p /var/run/smartd.pid -i 600 -A /var/log/smartd/'"}
+    - { key: "start_smartd", value: "yes" }
+    - { key: "smartd_opts", value: "'-p /var/run/smartd.pid -i 600 -A /var/log/smartd/'" }
   notify: smartd restart
 
 - name: smartd log directory
@@ -22,10 +22,44 @@
     src: logrotate.j2
     dest: /etc/logrotate.d/smartd
 
-- name: smartd config
+- name: verify given devices list
+  include_tasks: smartctl_scan.yml
+  loop: "{{ smartd_devices_types }}"
+  loop_control:
+    loop_var: type
+  when: smartd_devices_verify and not ansible_check_mode
+
+- name: prepare finalized list of devices types
+  block:
+    - name: if we successfully verified any of given types with smartctl
+      set_fact:
+        smartd_devices_types_finalized: "{{ smartd_found_devices_types }}"
+      when: smartd_devices_verify
+            and not ansible_check_mode
+            and smartd_found_devices_types is defined
+            and smartd_found_devices_types|length
+
+    - name: if we are sticking to given types (forced, check mode or no types verified)
+      set_fact:
+        smartd_devices_types_finalized: "{{ smartd_devices_types }}"
+      when: not smartd_devices_verify
+            or ansible_check_mode
+            or smartd_found_devices_types is not defined
+
+- name: generate smartd config (role test mode)
   template:
     src: smartd.j2
     dest: /etc/smartd.conf
   register: smartd_config
-  notify:
-    - smartd restart
+  notify: smartd restart
+  when: smartd_role_test_mode or ansible_check_mode
+
+- name: generate smartd config
+  template:
+    src: smartd.j2
+    dest: /etc/smartd.conf
+    validate: smartd -q onecheck -c %s
+  register: smartd_config
+  notify: smartd restart
+  when: not smartd_role_test_mode
+        and not ansible_check_mode
