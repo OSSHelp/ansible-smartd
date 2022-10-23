@@ -1,4 +1,4 @@
 {% for item in smartd_devices_to_ignore %}
 {{ item }} -d ignore
 {% endfor %}
-DEVICESCAN -a{{ ' -d ' ~ smartd_devices_types_finalized|join(' -d ') if smartd_devices_types_finalized is defined else ' ' }} -m {{ email_to }}{{ ' -M ' ~ ds_type if ds_type is defined else '' }} -n standby,10,q -s {{st_type | default('L')}}/{{st_month | default('..')}}/{{st_day | default('..')}}/{{st_wday | default('1')}}/{{st_hour | default('2')}}
+DEVICESCAN -a{{ ' -d ' ~ smartd_devices_types_finalized|join(' -d ') if smartd_devices_types_finalized is defined else ' ' }}{{ ' -m ' ~ email_to if email_to|length else '' }}{{ ' -M ' ~ ds_type if ds_type is defined else '' }} -n standby,10,q -s {{st_type | default('L')}}/{{st_month | default('..')}}/{{st_day | default('..')}}/{{st_wday | default('1')}}/{{st_hour | default('2')}}

@@ -1,10 +1,10 @@
 ---
 smartd_setup: full
-email_to: 'root'
 smartd_packages:
   - smartmontools
   - mailutils
 
+email_to: ''
 smartd_test_alert: true
 smartd_role_test_mode: false
 smartd_devices_to_ignore: []
